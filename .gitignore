@@ -157,10 +157,51 @@ Thumbs.db
 
 # Backend specific
 backend_debug.log
+backend_stable.log
+debug.log
+err.log
+*.log
 uploads/
 results/
 temp/
 tmp/
+temp_datasets/
+saved_pipelines/
 *.db
 *.csv
 *.xlsx
+*.xml
+*.json
+*.txt
+!README.md
+!requirements.txt
+
+# Temporary scripts / Debug scripts
+test_*.py
+verify_*.py
+diag_*.py
+debug_*.py
+repro_*.py
+reproduce_*.py
+check_*.py
+list_*.py
+seed_*.py
+self_test_*.py
+repair_*.py
+create_admin.py
+promote_admin.py
+catch_error.py
+inspect_routes.py
+out.txt
+tb.txt
+compliance_output.txt
+compliance_results.txt
+debug_output.txt
+debug_property.txt
+diag_api_output.txt
+diag_real_output.txt
+test_cat_output.txt
+test_output.log
+test_v2_output.txt
++ /tmp/
++ /tmp/*
