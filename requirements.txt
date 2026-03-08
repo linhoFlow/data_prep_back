@@ -12,7 +12,7 @@ python-dotenv
 bcrypt
 imbalanced-learn
 xgboost
-scikit-nlp
+gensim
 sentence-transformers
 polars
 joblib
