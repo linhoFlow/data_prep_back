@@ -1,0 +1,30 @@
+Loading dataset...
+Dataset loaded: (50000, 10)
+Columns: ['ID', 'Nom', 'Age', 'Revenu_Annuel', 'Score_Credit', 'Ville', 'Sexe', 'Derniere_Achat', 'Valeur_Stock', 'Est_Actif']
+Running autopilot...
+--- [AUTOPILOT V8-POLARS] Objective: classification, Algos: auto, NLP: None ---
+[DEBUG] numerical_features: ['Age', 'Score_Credit', 'Valeur_Stock', 'Est_Actif']
+[DEBUG] nominale_features: ['Ville', 'Sexe']
+[DEBUG] ordinale_features: []
+[DEBUG] df.columns: ['Age', 'Score_Credit', 'Ville', 'Sexe', 'Valeur_Stock', 'Est_Actif']
+[DEBUG] Features MISSING from df: []
+[MissingValueHandler] Fitting with Polars on (50000, 4)
+[ERROR] MultivariatOutlierDetector: This 'LocalOutlierFactor' has no attribute 'predict'
+[MissingValueHandler] Fitting with Polars on (50000, 2)
+[ERROR] MultivariatOutlierDetector: This 'LocalOutlierFactor' has no attribute 'predict'
+[ERROR] MultivariatOutlierDetector: This 'LocalOutlierFactor' has no attribute 'predict'
+Success! Transformations applied:
+  MODE : Auto-Pilot (Objectif: classification, Algos: auto)
+  0.1: Correction des types : 'Derniere_Achat': Utf8 -> datetime
+  0.4: Colonne 'Nom' supprimee (identifiant unique)
+  C.1: Colonne 'ID' supprimee (identifiant ou haute cardinalité)
+  C.1: Colonne 'Revenu_Annuel' supprimee (identifiant ou haute cardinalité)
+  C.1: Colonne 'Derniere_Achat' supprimee (identifiant ou haute cardinalité)
+  A.1: Colonne 'Age' -> MCAR (9.5%)
+  A.1: Colonne 'Ville' -> MCAR (9.5%)
+  B.1+: Outliers multivariés activés (algo=lof)
+  F.1: Scaling activé (méthode=StandardScaler, algos=auto)
+  F.2: Scaling catégorielles nominales activé (MinMaxScaler, algos distance=auto)
+  F.2: Scaling catégorielles ordinales activé (MinMaxScaler, algos distance=auto)
+  H.4: Pipeline sauvegarde
+  H.5: Test Non-Régression PASSÉ (20 predictions)

@@ -1,0 +1,16 @@
+flask
+flask-cors
+pymongo
+pandas
+numpy
+scikit-learn
+openpyxl
+lxml
+flask-jwt-extended
+flasgger
+python-dotenv
+bcrypt
+imbalanced-learn
+xgboost
+scikit-nlp
+sentence-transformers

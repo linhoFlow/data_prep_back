@@ -1,0 +1,50 @@
+Loaded: (9, 7)
+Columns: ['PID', 'ST_NUM', 'ST_NAME', 'OWN_OCCUPIED', 'NUM_BEDROOMS', 'NUM_BATH', 'SQ_FT']
+Dtypes:
+PID             float64
+ST_NUM          float64
+ST_NAME          object
+OWN_OCCUPIED     object
+NUM_BEDROOMS     object
+NUM_BATH         object
+SQ_FT            object
+dtype: object
+
+--- [AUTOPILOT V8-POLARS] Objective: classification, Algos: knn, NLP: None ---
+[MissingValueHandler] Fitting with Polars on (9, 3)
+C:\Users\NDOUR\AppData\Roaming\Python\Python314\site-packages\sklearn\neighbors\_lof.py:285: UserWarning: n_neighbors (20) is greater than the total number of samples (9). n_neighbors will be set to (n_samples - 1) for estimation.
+  warnings.warn(
+[ERROR] MultivariatOutlierDetector: This 'LocalOutlierFactor' has no attribute 'predict'
+[MissingValueHandler] Fitting with Polars on (9, 2)
+[ERROR] MultivariatOutlierDetector: This 'LocalOutlierFactor' has no attribute 'predict'
+[ERROR] MultivariatOutlierDetector: This 'LocalOutlierFactor' has no attribute 'predict'
+
+Result: (9, 11)
+Result columns: ['NUM_BEDROOMS', 'NUM_BATH', 'NUM_BATH_was_missing', 'x0_BERKELEY', 'x0_LEXINGTON', 'x0_PUTNAM', 'x0_TREMONT', 'x0_WASHINGTON', 'x1_12', 'x1_N', 'x1_Y']
+
+Transformations:
+  MODE : Auto-Pilot (Objectif: classification, Algos: knn)
+  0.1: Correction des types : 'NUM_BEDROOMS': Utf8 -> float64, 'NUM_BATH': Utf8 -> float64, 'SQ_FT': Utf8 -> float64
+  C.1: Colonne 'PID' supprimee (identifiant ou haute cardinalité)
+  C.1: Colonne 'ST_NUM' supprimee (identifiant ou haute cardinalité)
+  C.1: Colonne 'SQ_FT' supprimee (identifiant ou haute cardinalité)
+  A.1: Colonne 'OWN_OCCUPIED' -> MCAR (11.1%)
+  A.1: Colonne 'NUM_BEDROOMS' -> MCAR (33.3%)
+  A.1: Colonne 'NUM_BATH' -> MNAR (22.2%)
+  A.1+: Indicateurs MNAR crees : NUM_BATH_was_missing
+  B.1+: Outliers multivariés activés (algo=lof)
+  F.1: Scaling activé (méthode=StandardScaler, algos=knn)
+  F.2: Scaling catégorielles nominales activé (MinMaxScaler, algos distance=knn)
+  F.2: Scaling catégorielles ordinales activé (MinMaxScaler, algos distance=knn)
+  H.4: Pipeline sauvegarde
+  H.5: Test Non-Régression PASSÉ (9 predictions)
+
+First 5 rows:
+   NUM_BEDROOMS  NUM_BATH  ...  x1_N  x1_Y
+0        0.5000  0.268089  ...   0.0   1.0
+1        1.0000  0.500000  ...   1.0   0.0
+2        0.0000  0.000000  ...   0.0   1.0
+3        0.0000  0.063193  ...   0.0   0.0
+4        0.5824  0.000000  ...   1.0   0.0
+
+[5 rows x 11 columns]

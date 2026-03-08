@@ -1,0 +1,68 @@
+[ 1] MODE : Auto-Pilot (Objectif: classification, Algo: knn)
+[ 2] 0.1: Audit des types OK (aucune correction necessaire)
+[ 3] 0.4: Colonne 'name' supprimee (identifiant unique)
+[ 4] 0.4: Colonne 'constant_col' supprimee (constante)
+[ 5] A.1: Colonne 'age' -> MNAR (Données manquantes non aléatoires (dépendance forte), NaN=6.0%)
+[ 6] A.1: Colonne 'salary' -> MAR (Données manquantes dépendant d'autres variables observées, NaN=6.0%)
+[ 7] A.1+: Indicateurs MNAR crees : age_was_missing
+[ 8] C.1: Colonnes ID/Nom supprimees : client_id
+[ 9] C.2: Features temporelles extraites : date_joined_year, date_joined_month, date_joined_day, date_joined_dayofweek, date_joined_quarter
+[10] C.3: Encodage cyclique sin/cos : date_joined_month_sin, date_joined_month_cos, date_joined_day_sin, date_joined_day_cos, date_joined_dayofweek_sin, date_joined_dayofweek_cos, date_joined_quarter_sin, date_joined_quarter_cos
+[11] Algo knn : Outliers activés
+[12] Algo knn : Scaling activé
+[13] E.6: num_pipeline créé (12 colonnes numériques)
+[14] Exigence 14: Pipeline nominal créé (1 col) -> OneHotEncoder (Condensé pour éviter l'ajout de colonnes)
+[15] Exigence 15: Pipeline ordinal créé (1 col) -> OrdinalEncoder
+[16] COLONNES : 15 col(s) en entrée -> 15 col(s) en sortie (Ordre préservé)
+[17] E.1: Encodage cible 'target' par LabelEncoder (Classification)
+[18] F.1: Scaling 'age' -> StandardScaler (Gaussien)
+[19] F.1: Scaling 'salary' -> StandardScaler (Gaussien)
+[20] F.1: Scaling 'age_was_missing' -> RobustScaler (outliers)
+[21] F.1: Scaling 'date_joined_year' -> StandardScaler (Gaussien)
+[22] F.1: Scaling 'date_joined_month_sin' -> MinMaxScaler (non-Gaussien)
+[23] F.1: Scaling 'date_joined_month_cos' -> StandardScaler (Gaussien)
+[24] F.1: Scaling 'date_joined_day_sin' -> StandardScaler (Gaussien)
+[25] F.1: Scaling 'date_joined_day_cos' -> StandardScaler (Gaussien)
+[26] F.1: Scaling 'date_joined_dayofweek_sin' -> StandardScaler (Gaussien)
+[27] F.1: Scaling 'date_joined_dayofweek_cos' -> StandardScaler (Gaussien)
+[28] F.1: Scaling 'date_joined_quarter_sin' -> RobustScaler (outliers)
+[29] F.1: Scaling 'date_joined_quarter_cos' -> RobustScaler (outliers)
+[30] A.2: Imputation 'age' -> IterativeImputer (MNAR, NaN=6.0%)
+[31] A.2: Imputation 'salary' -> IterativeImputer (MAR, NaN=6.0%)
+[32] B.1: Outliers 'age' -> Z-score (remplacement par moyenne (normale))
+[33] B.1: Outliers 'salary' -> Z-score (remplacement par moyenne (normale))
+[34] B.1: Outliers 'age_was_missing' -> Winsorisation (5%-95%, fortement asymetrique)
+[35] B.1: Outliers 'date_joined_year' -> Z-score (remplacement par moyenne (normale))
+[36] B.1: Outliers 'date_joined_month_sin' -> IQR/Boxplot (clip IQR, legerement asymetrique)
+[37] B.1: Outliers 'date_joined_month_cos' -> Z-score (remplacement par mediane (quasi-normale))
+[38] B.1: Outliers 'date_joined_day_sin' -> Z-score (remplacement par moyenne (normale))
+[39] B.1: Outliers 'date_joined_day_cos' -> Z-score (remplacement par moyenne (normale))
+[40] B.1: Outliers 'date_joined_dayofweek_sin' -> Z-score (remplacement par moyenne (normale))
+[41] B.1: Outliers 'date_joined_dayofweek_cos' -> Z-score (remplacement par moyenne (normale))
+[42] B.1: Outliers 'date_joined_quarter_sin' -> Winsorisation (5%-95%, fortement asymetrique)
+[43] B.1: Outliers 'date_joined_quarter_cos' -> Winsorisation (5%-95%, fortement asymetrique)
+[44] D.1: Split train/test (80/20 + stratify=y)
+[45] G.2: SMOTE applique sur train (80 -> 144 lignes)
+[46] H.4: Pipeline sauvegarde (C:\Users\NDOUR\Desktop\data\data_analyst_back\saved_pipelines\preprocessor_pipeline.pkl)
+[47] Pipeline complet execute avec succes (100% conformite)
+
+Shape: (164, 15)
+Columns: ['age', 'salary', 'category', 'level', 'age_was_missing', 'date_joined_year', 'date_joined_month_sin', 'date_joined_month_cos', 'date_joined_day_sin', 'date_joined_day_cos', 'date_joined_dayofweek_sin', 'date_joined_dayofweek_cos', 'date_joined_quarter_sin', 'date_joined_quarter_cos', 'target']
+
+COMPLIANCE:
+  [PASS] 0.1
+  [PASS] 0.4
+  [PASS] A.1
+  [PASS] A.2
+  [PASS] B.1
+  [PASS] C.1
+  [PASS] C.2
+  [PASS] C.3
+  [PASS] D.
+  [PASS] E.1
+  [PASS] F.1
+  [PASS] G.
+  [PASS] H.4
+  [PASS] 100%
+
+Pipeline file: True
