@@ -30,10 +30,18 @@ def create_app():
     # MongoDB Init
     global mongo_client, db
     uri = os.getenv('MONGODB_URI')
-    mongo_client = MongoClient(uri)
-    # Extract DB name from URI or use default
-    db_name = uri.split('/')[-1].split('?')[0] or 'data_prep_pro'
-    db = mongo_client[db_name]
+    print(f"[INIT] Connecting to MongoDB...", flush=True)
+    try:
+        mongo_client = MongoClient(uri, serverSelectionTimeoutMS=5000)
+        # Extract DB name from URI or use default
+        db_name = uri.split('/')[-1].split('?')[0] or 'data_prep_pro'
+        db = mongo_client[db_name]
+        # Test connection
+        mongo_client.admin.command('ping')
+        print(f"[INIT] MongoDB connected to database: {db_name}", flush=True)
+    except Exception as e:
+        print(f"[ERROR] MongoDB connection failed: {str(e)}", flush=True)
+        # We continue to let the app start, but DB dependent routes will fail
 
     # Register Blueprints
     from app.routes.auth import auth_bp
