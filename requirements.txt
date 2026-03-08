@@ -11,13 +11,10 @@ flasgger
 python-dotenv
 bcrypt
 imbalanced-learn
-xgboost
 gensim
 sentence-transformers
 polars
 joblib
 python-dateutil
 scipy
-lightgbm
-catboost
 gunicorn

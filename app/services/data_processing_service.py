@@ -39,18 +39,9 @@ from sklearn.neighbors import LocalOutlierFactor
 from sklearn.covariance import EllipticEnvelope
 from sklearn.model_selection import cross_validate, StratifiedKFold, KFold
 
-# NLP & Embeddings
-try:
-    from gensim.models import Word2Vec
-except ImportError:
-    Word2Vec = None
-    print("[WARN] gensim not available - Word2Vec disabled")
-    
-try:
-    from sentence_transformers import SentenceTransformer
-except (ImportError, Exception):
-    SentenceTransformer = None
-    print("[WARN] sentence_transformers not available - BERT disabled")
+# NLP & Embeddings placeholders
+Word2Vec = None
+SentenceTransformer = None
 
 
 # ================================================================
@@ -388,12 +379,20 @@ class TextEmbedder(BaseEstimator, TransformerMixin):
         if self.mode == 'tfidf':
             self.vectorizer = TfidfVectorizer(max_features=self.max_features)
             self.vectorizer.fit(X_clean)
-        elif self.mode == 'word2vec' and Word2Vec is not None:
-            sentences = [str(text).split() for text in X_clean if str(text).strip()]
-            if sentences:
-                self.model = Word2Vec(sentences=sentences, vector_size=self.embedding_dim, window=5, min_count=1, workers=4)
-        elif self.mode == 'bert' and SentenceTransformer is not None:
-            self.model = SentenceTransformer('distiluse-base-multilingual-v3')
+        elif self.mode == 'word2vec':
+            try:
+                from gensim.models import Word2Vec
+                sentences = [str(text).split() for text in X_clean if str(text).strip()]
+                if sentences:
+                    self.model = Word2Vec(sentences=sentences, vector_size=self.embedding_dim, window=5, min_count=1, workers=4)
+            except ImportError:
+                print("[ERROR] gensim not installed for word2vec", flush=True)
+        elif self.mode == 'bert':
+            try:
+                from sentence_transformers import SentenceTransformer
+                self.model = SentenceTransformer('distiluse-base-multilingual-v3')
+            except Exception as e:
+                print(f"[ERROR] sentence_transformers failed: {str(e)}", flush=True)
         return self
 
     def transform(self, X):
@@ -1589,7 +1588,8 @@ class DataProcessingService:
             if text_features:
                 effective_nlp = nlp_mode
                 if nlp_mode == 'embeddings':
-                    effective_nlp = 'bert' if SentenceTransformer is not None else 'word2vec'
+                    # Heuristic check without importing at top level
+                    effective_nlp = 'bert'
                 
                 if effective_nlp == 'tfidf':
                     nlp_pipe = Pipeline([
