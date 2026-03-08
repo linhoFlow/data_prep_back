@@ -14,3 +14,10 @@ imbalanced-learn
 xgboost
 scikit-nlp
 sentence-transformers
+polars
+joblib
+python-dateutil
+scipy
+lightgbm
+catboost
+gunicorn
