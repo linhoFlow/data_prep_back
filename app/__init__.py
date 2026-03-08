@@ -43,18 +43,26 @@ def create_app():
         print(f"[ERROR] MongoDB connection failed: {str(e)}", flush=True)
         # We continue to let the app start, but DB dependent routes will fail
 
-    # Register Blueprints
+    print("[INIT] Registering Blueprints...", flush=True)
     from app.routes.auth import auth_bp
-    from app.routes.datasets import datasets_bp
-    from app.routes.sessions import sessions_bp
-    from app.routes.chat import chat_bp
-    from app.routes.admin import admin_bp
-
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    print("[INIT] Auth blueprint registered.", flush=True)
+
+    from app.routes.datasets import datasets_bp
     app.register_blueprint(datasets_bp, url_prefix='/api/datasets')
+    print("[INIT] Datasets blueprint registered.", flush=True)
+
+    from app.routes.sessions import sessions_bp
     app.register_blueprint(sessions_bp, url_prefix='/api/sessions')
+    print("[INIT] Sessions blueprint registered.", flush=True)
+
+    from app.routes.chat import chat_bp
     app.register_blueprint(chat_bp, url_prefix='/api/chat')
+    print("[INIT] Chat blueprint registered.", flush=True)
+
+    from app.routes.admin import admin_bp
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
+    print("[INIT] Admin blueprint registered.", flush=True)
 
     @app.route('/health')
     def health():
