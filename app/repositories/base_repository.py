@@ -1,9 +1,15 @@
-from app import db
 from bson import ObjectId
 
 class BaseRepository:
     def __init__(self, collection_name):
-        self.collection = db[collection_name]
+        self.collection_name = collection_name
+
+    @property
+    def collection(self):
+        import app
+        if app.db is None:
+            raise Exception("Database access attempted before initialization in app.create_app()")
+        return app.db[self.collection_name]
 
     def find_all(self):
         return list(self.collection.find())

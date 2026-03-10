@@ -151,7 +151,7 @@ def upload_file():
         return jsonify({
             "error": "Erreur lors du traitement du fichier",
             "details": str(e),
-            "trace": trace_str if current_app.debug else None
+            "trace": trace_str
         }), 500
 
 
