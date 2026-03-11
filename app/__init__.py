@@ -39,6 +39,7 @@ def create_app():
         # Test connection
         mongo_client.admin.command('ping')
         print(f"[INIT] MongoDB connected to database: {db_name}", flush=True)
+        app.db = db # Attach to app object for cross-module access
     except Exception as e:
         print(f"[ERROR] MongoDB connection failed: {str(e)}", flush=True)
         # We continue to let the app start, but DB dependent routes will fail

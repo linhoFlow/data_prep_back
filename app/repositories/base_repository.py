@@ -1,3 +1,4 @@
+from flask import current_app
 from bson import ObjectId
 
 class BaseRepository:
@@ -6,10 +7,9 @@ class BaseRepository:
 
     @property
     def collection(self):
-        import app
-        if app.db is None:
-            raise Exception("Database access attempted before initialization in app.create_app()")
-        return app.db[self.collection_name]
+        if not hasattr(current_app, 'db') or current_app.db is None:
+            raise Exception("Database not initialized on current_app. Check create_app logic.")
+        return current_app.db[self.collection_name]
 
     def find_all(self):
         return list(self.collection.find())

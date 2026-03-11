@@ -32,7 +32,7 @@ dataset_repo = DatasetRepository()
 # Le serveur de dev Flask redémarre lors de l'upload de fichiers, 
 # ce qui efface la RAM. Stocker sur disque évite les erreurs 404.
 # -------------------------------------------------------------------
-DATASETS_STORE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'temp_datasets')
+DATASETS_STORE_DIR = "/tmp/datasets"
 os.makedirs(DATASETS_STORE_DIR, exist_ok=True)
 
 def save_dataset(dataset_id, df):
