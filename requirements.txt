@@ -18,3 +18,4 @@ joblib
 python-dateutil
 scipy
 gunicorn
+pyarrow
