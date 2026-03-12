@@ -85,7 +85,9 @@ def upload_file():
 
     try:
         filename = secure_filename(file.filename)
+        print(f"--- [UPLOAD] Reception du fichier: {filename} ---", flush=True)
         file_content = file.read()
+        print(f"--- [UPLOAD] Lecture terminee. Taille: {len(file_content)} bytes ---", flush=True)
         
         # A.1 — Vérifier la taille du fichier
         file_size_mb = len(file_content) / (1024 * 1024)
@@ -99,11 +101,14 @@ def upload_file():
                 "current_tier": tier
             }), 403
         
-        # Parser le fichier
-        df, error_msg = data_service.parse_file(file_content, filename)
+        # A.2 — Parsing du fichier
+        print(f"--- [UPLOAD] Debut du parsing avec Polars... ---", flush=True)
+        df, parse_error = data_service.parse_file(file_content, filename)
+        if parse_error:
+            print(f"--- [UPLOAD] Erreur de parsing: {parse_error} ---", flush=True)
+            return jsonify({"error": parse_error}), 400
         
-        if error_msg:
-             return jsonify({"error": error_msg}), 400
+        print(f"--- [UPLOAD] Parsing reussi. Colonnes detectees: {df.width} ---", flush=True)
 
         # A.1 — Vérifier les limites colonnes/lignes
         n_rows, n_cols = len(df), len(df.columns) if hasattr(df, 'columns') else 0
@@ -119,16 +124,27 @@ def upload_file():
         save_dataset(dataset_id, df)
         
         # ✅ Enregistrement dans MongoDB pour le tracking dashboard
-        user_id = _get_current_user_id()
-        dataset_repo.create({
-            "dataset_id": dataset_id,
-            "user_id": user_id,
+        current_user_id = _get_current_user_id()
+        print(f"--- [UPLOAD] Sauvegarde des metadonnées pour User: {current_user_id or 'Guest'} ---", flush=True)
+        
+        dataset_meta = {
+            "id": dataset_id,
             "filename": filename,
             "size_mb": file_size_mb,
-            "rows": n_rows,
-            "cols": n_cols,
-            "created_at": datetime.utcnow().isoformat()
-        })
+            "rows": df.height,
+            "columns": df.width,
+            "userId": current_user_id,
+            "isGuest": tier == "guest",
+            "tier": tier,
+            "createdAt": datetime.now()
+        }
+        dataset_repo.create(dataset_meta)
+        print(f"--- [UPLOAD] Métadonnées enregistrées en base. ---", flush=True)
+
+        # C. Sauvegarder dans DATASETS_STORE_DIR
+        print(f"--- [UPLOAD] Sauvegarde sur disque... ---", flush=True)
+        save_dataset(dataset_id, df)
+        print(f"--- [UPLOAD] Sauvegarde disque OK. ---", flush=True)
         
         # Obtenir les informations détaillées pour le frontend
         dataset_info = data_service.get_dataset_info(df, dataset_id)

@@ -39,10 +39,11 @@ def create_app():
         # Test connection
         mongo_client.admin.command('ping')
         print(f"[INIT] MongoDB connected to database: {db_name}", flush=True)
-        app.db = db # Attach to app object for cross-module access
+        # Attach to app object for robust access
+        app.db = db
     except Exception as e:
         print(f"[ERROR] MongoDB connection failed: {str(e)}", flush=True)
-        # We continue to let the app start, but DB dependent routes will fail
+        app.db = None
 
     print("[INIT] Registering Blueprints...", flush=True)
     from app.routes.auth import auth_bp
@@ -67,6 +68,12 @@ def create_app():
 
     @app.route('/health')
     def health():
-        return {'status': 'healthy', 'mongodb': 'connected' if mongo_client else 'disconnected', 'version': 'V3.2-RELIANT'}
+        db_status = 'connected' if hasattr(app, 'db') and app.db is not None else 'disconnected'
+        return {
+            'status': 'healthy',
+            'mongodb': db_status,
+            'version': 'V3.3-STABLE',
+            'env': os.getenv('FLASK_ENV', 'production')
+        }
 
     return app
