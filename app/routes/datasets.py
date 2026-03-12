@@ -21,6 +21,7 @@ from app.middleware.tier_guard import (
     _get_user_tier, check_rate_limit_decorator, require_tier, _check_rate_limit,
     _get_current_user_id
 )
+from flask_cors import cross_origin
 
 datasets_bp = Blueprint('datasets', __name__)
 data_service = DataProcessingService()
@@ -216,6 +217,7 @@ def get_overview(dataset_id):
 # 3. AUTO-PILOT (PRÉTRAITEMENT AUTOMATIQUE)
 # ==========================================
 @datasets_bp.route('/<dataset_id>/autopilot', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def autopilot(dataset_id):
     """
     Applique le pipeline de traitement de données automatique sur le dataset spécifié.

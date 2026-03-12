@@ -1155,6 +1155,7 @@ class DataProcessingService:
 
             algo_str = ", ".join(algos)
             print(f"--- [AUTOPILOT V8-POLARS] Objective: {objective}, Algos: {algo_str}, NLP: {nlp_mode}, Guest: {is_guest} ---", flush=True)
+            print(f"[DEBUG] Initial Data Shape: {df.shape}", flush=True)
             transformations.append(f"MODE : Auto-Pilot (Objectif: {objective}, Algos: {algo_str})")
 
             # ================================================================
@@ -1427,10 +1428,10 @@ class DataProcessingService:
                 # Fix #2 : Features avancées (weekend, saison, ancienneté)
                 df = df.with_columns([
                     (pl.col(f'{col}_dayofweek') >= 5).cast(pl.Int32).alias(f'{col}_is_weekend'),
-                    pl.col(f'{col}_month').map_elements(
-                        lambda m: 1 if m in [12, 1, 2] else (2 if m in [3, 4, 5] else (3 if m in [6, 7, 8] else 4)),
-                        return_dtype=pl.Int32
-                    ).alias(f'{col}_season'),
+                    pl.when(pl.col(f'{col}_month').is_in([12, 1, 2])).then(1)
+                      .when(pl.col(f'{col}_month').is_in([3, 4, 5])).then(2)
+                      .when(pl.col(f'{col}_month').is_in([6, 7, 8])).then(3)
+                      .otherwise(4).alias(f'{col}_season'),
                 ])
                 # Ancienneté en jours depuis la date min (référence interne)
                 try:
@@ -1692,8 +1693,11 @@ class DataProcessingService:
                 original_train_cols = list(X_train.columns)
                 X_train_pd = X_train.to_pandas()
                 X_test_pd = X_test.to_pandas()
+                print(f"[DEBUG] Starting Fit-Transform on X_train (Shape: {X_train_pd.shape})...", flush=True)
                 raw_train = preprocessor.fit_transform(X_train_pd)
+                print(f"[DEBUG] Fit-Transform complete. Starting Transform on X_test...", flush=True)
                 raw_test = preprocessor.transform(X_test_pd)
+                print(f"[DEBUG] Transform complete.", flush=True)
                 
                 # CORRECTIF #5 : Capturer un échantillon BRUT pour le test de non-régression plus tard
                 X_regression_sample = X_test_pd.head(20).copy()
